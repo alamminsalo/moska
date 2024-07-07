@@ -18,27 +18,29 @@ enum PlayerAction {
 }
 
 #[derive(Debug, PartialEq)]
-enum State {
+#[wasm_bindgen]
+pub enum State {
     Initial,
     PlayerAttacking,
     PlayerDefending,
-    GameOver(usize), // contains losing player index
+    GameOver, // contains losing player index
 }
 
 #[wasm_bindgen(getter_with_clone)]
 pub struct Moska {
-    table: Table,
-    trump_card: Card,
+    pub table: Table,
+    pub trump_card: Card,
 
-    attacker_cards: Vec<Card>,
-    defender_cards: Vec<Card>,
-    discarded: Vec<Card>,
+    pub attacker_cards: Vec<Card>,
+    pub defender_cards: Vec<Card>,
+    pub discarded: Vec<Card>,
 
     state: State,
 }
 
 #[wasm_bindgen]
 impl Moska {
+    #[wasm_bindgen(constructor)]
     pub fn new(players: u8) -> Self {
         Self {
             table: Table::new(players),
@@ -50,7 +52,7 @@ impl Moska {
         }
     }
 
-    fn reset(&mut self) {
+    pub(crate) fn reset(&mut self) {
         self.table.reset();
         self.attacker_cards.clear();
         self.defender_cards.clear();
@@ -85,7 +87,7 @@ impl Moska {
             .collect();
 
         if players_with_cards.len() == 1 {
-            self.state = State::GameOver(players_with_cards[0]);
+            self.state = State::GameOver;
             return true;
         }
 
@@ -128,13 +130,13 @@ impl Moska {
             if let Some(player) = self.table.current_player_mut() {
                 match &self.state {
                     State::PlayerAttacking => {
-                        if let Some(card) = self.attacker_cards.pop() {
-                            player.cards.push(card);
+                        if self.attacker_cards.get(card_index).is_some() {
+                            player.cards.push(self.attacker_cards.remove(card_index));
                         }
                     }
                     State::PlayerDefending => {
-                        if let Some(card) = self.defender_cards.pop() {
-                            player.cards.push(card);
+                        if self.defender_cards.get(card_index).is_some() {
+                            player.cards.push(self.defender_cards.remove(card_index));
                         }
                     }
                     _ => {
@@ -191,14 +193,6 @@ impl Moska {
         }
 
         true
-    }
-
-    pub fn game_over(&self) -> Option<usize> {
-        if let State::GameOver(player_index) = &self.state {
-            Some(*player_index)
-        } else {
-            None
-        }
     }
 
     // Returns copy of player cards
@@ -569,7 +563,7 @@ mod tests {
 
         // player 1 should have no cards left,
         // meaning player 2 has lost the game
-        assert_eq!(game.state, State::GameOver(2));
+        assert_eq!(game.state, State::GameOver);
 
         // try again with some cards present on the deck
         let mut game = Moska::new(3);
@@ -606,6 +600,6 @@ mod tests {
         game.player_action(PlayerAction::Submit as usize, 0);
 
         // player 0 should have lost the game
-        assert_eq!(game.state, State::GameOver(0));
+        assert_eq!(game.state, State::GameOver);
     }
 }

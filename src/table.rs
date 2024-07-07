@@ -41,8 +41,9 @@ pub struct Table {
     pub round: usize,
 }
 
+#[wasm_bindgen]
 impl Table {
-    pub fn new(players: u8) -> Self {
+    pub(crate) fn new(players: u8) -> Self {
         Table {
             players: vec![Player::new(); players as usize],
             deck: Deck::new(),
@@ -51,7 +52,7 @@ impl Table {
         }
     }
 
-    pub fn reset(&mut self) {
+    pub(crate) fn reset(&mut self) {
         self.deck = Deck::new();
 
         for player in self.players.iter_mut() {
@@ -59,15 +60,15 @@ impl Table {
         }
     }
 
-    pub fn player_index(&self) -> usize {
+    pub(crate) fn player_index(&self) -> usize {
         self.turn % self.players.len()
     }
 
-    pub fn current_player(&mut self) -> Option<&Player> {
+    pub(crate) fn current_player(&mut self) -> Option<&Player> {
         self.players.get(self.player_index())
     }
 
-    pub fn current_player_mut(&mut self) -> Option<&mut Player> {
+    pub(crate) fn current_player_mut(&mut self) -> Option<&mut Player> {
         let player_index = self.player_index();
         self.players.get_mut(player_index)
     }

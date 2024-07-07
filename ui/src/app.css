@@ -1,0 +1,15 @@
+:root {
+  font-family: "Times New Roman", Times, serif;
+  @apply bg-green-700 text-black;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  display: block;
+}
+
+#app {
+  margin: 0;
+  padding: 0;
+}
