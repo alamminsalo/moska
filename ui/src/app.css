@@ -3,8 +3,7 @@
 @tailwind base;
 
 :root {
-  font-family: "Times New Roman", Times, serif;
-  @apply bg-green-700 text-black h-full w-full;
+  @apply bg-green-700 text-black h-full w-full border-black;
 }
 
 body {
@@ -18,4 +17,28 @@ body {
   @apply h-full w-full;
   margin: 0;
   padding: 0;
+}
+
+button {
+  @apply relative font-bold rounded p-2
+  text-black
+  uppercase;
+
+  &:active {
+    @apply text-white;
+  }
+
+  &:hover {
+    @apply text-slate-200;
+  }
+}
+
+.card {
+  @apply bg-slate-300 border border-black border-2 rounded;
+  font-size: 9rem;
+  line-height: 5rem;
+  padding-bottom: 2rem;
+  text-indent: -0.6rem;
+  letter-spacing: -0.6rem;
+  overflow: hidden;
 }

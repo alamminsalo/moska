@@ -3,9 +3,13 @@
   export let card: Card;
   export let interactive: boolean = true;
   export let onclick = () => {};
+
+  export let style = "";
+
+  let red = ["Hearts", "Diamonds"].includes(card.suit);
 </script>
 
-<span class="card" class:interactive={interactive} on:click={onclick}>
+<span class="card" class:interactive={interactive} style={style} on:click={onclick} class:red={red}>
   {card.unicode}
 </span>
 
@@ -13,14 +17,17 @@
   .card {
     @apply relative;
     cursor: pointer;
-    font-size: 9rem;
-    line-height: 7rem;
-    padding-bottom: 1.2rem;
+    rotate: inherit;
   }
   .interactive {
     &:hover {
-      top: -10px;
+      top: -1rem;
+      transform: rotate(3deg);
+      z-index: 999;
     }
+  }
+  .red {
+    @apply text-red-700;
   }
 </style>
 

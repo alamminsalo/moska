@@ -17,13 +17,13 @@ enum PlayerAction {
     Submit = 3,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 #[wasm_bindgen]
 pub enum State {
     Initial,
     PlayerAttacking,
     PlayerDefending,
-    GameOver, // contains losing player index
+    GameOver,
 }
 
 #[wasm_bindgen(getter_with_clone)]
@@ -35,7 +35,7 @@ pub struct Moska {
     pub defender_cards: Vec<Card>,
     pub discarded: Vec<Card>,
 
-    state: State,
+    pub state: State,
 }
 
 #[wasm_bindgen]
@@ -237,6 +237,16 @@ impl Moska {
         }
     }
 
+    #[wasm_bindgen(getter)]
+    pub fn valid(&self) -> bool {
+        use State::*;
+        match self.state {
+            PlayerAttacking => self.eval_attack(),
+            PlayerDefending => self.eval_defense(),
+            _ => false,
+        }
+    }
+
     // Evaluates attacking validity.
     // Attacking cards must either contain a single card
     // or must be paired cards.
@@ -273,7 +283,12 @@ impl Moska {
 
     // Resolves attacking and defending cards.
     // Returns resolve result.
-    fn eval_defense(&mut self) -> bool {
+    fn eval_defense(&self) -> bool {
+        // Early return on empty defender hand
+        if self.defender_cards.is_empty() {
+            return true;
+        }
+
         // Must have same number of cards
         if self.attacker_cards.len() != self.defender_cards.len() {
             return false;

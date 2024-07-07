@@ -4,23 +4,17 @@
   export let active = false;
 </script>
 
-<span class="text-center" class:active={active}>
+<span class="deck text-center px-4" class:active={active}>
   <!-- card backface, deck/player name -->
-  <div>{name}</div>
-  <div class="card">🂠</div>
+  <div class="name pb-1">{name}</div>
+  <div class="card text-blue-700">🂠</div>
   <!-- deck count -->
-  <div>x{count}</div>
+  <div class="count">x{count}</div>
 </span>
 
 <style lang="scss">
-  .card {
-    font-size: 9rem;
-    line-height: 7rem;
-    padding-bottom: 1.2rem;
-  }
-
-  .active {
-    top: -10px;
+  .deck.active > .name {
+    @apply text-slate-200;
   }
 </style>
 
