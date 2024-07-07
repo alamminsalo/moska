@@ -60,7 +60,8 @@ impl Table {
         }
     }
 
-    pub(crate) fn player_index(&self) -> usize {
+    #[wasm_bindgen(getter)]
+    pub fn player_index(&self) -> usize {
         self.turn % self.players.len()
     }
 

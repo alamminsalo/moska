@@ -12,11 +12,10 @@
 <style lang="scss">
   .card {
     @apply relative;
-    font-size: 9rem;
-    text-align: center;
-    vertical-align: middle;
-    padding-bottom: 1rem;
     cursor: pointer;
+    font-size: 9rem;
+    line-height: 7rem;
+    padding-bottom: 1.2rem;
   }
   .interactive {
     &:hover {
