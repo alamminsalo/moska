@@ -1,17 +1,15 @@
 <script lang="ts">
   export let count = 0;
 
-  let maxCardsShown = 6;
-  count = Math.min(count, maxCardsShown)
-
   let cardTransforms: any[] = []
   let deckOffset = 0;
 
-  function refresh(maxOffset=18) {
-    let cards = [...Array(count).keys()]
+  function refresh(maxOffset=14) {
+    let _count = Math.min(count, 6)
+    let cards = [...Array(_count).keys()]
     
     cardTransforms = cards.map(index => ({
-      offset: maxOffset / count * index,
+      offset: maxOffset / _count * index,
     }))
 
     deckOffset = -(cardTransforms.at(-1)?.offset ?? 0) / 2
