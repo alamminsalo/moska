@@ -18,7 +18,7 @@
   $: count, refresh()
 </script>
 
-<span class="text-center"}>
+<span class="text-center">
   <span class="deck text-center px-4" style={`transform: translate(${deckOffset}px);`}>
     {#each cardTransforms as tr}
       <span class="card back" style={`transform: translate(${tr.offset}px);`}>🂠</span>
