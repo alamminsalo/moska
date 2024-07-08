@@ -5,7 +5,7 @@
   let deckOffset = 0;
 
   function refresh(maxOffset=14) {
-    let _count = Math.min(count, 6)
+    let _count = Math.min(Math.max(count-1,0), 6)
     let cards = [...Array(_count).keys()]
     
     cardTransforms = cards.map(index => ({
@@ -18,7 +18,7 @@
   $: count, refresh()
 </script>
 
-<span class="text-center">
+<span class="text-center"}>
   <span class="deck text-center px-4" style={`transform: translate(${deckOffset}px);`}>
     {#each cardTransforms as tr}
       <span class="card back" style={`transform: translate(${tr.offset}px);`}>🂠</span>

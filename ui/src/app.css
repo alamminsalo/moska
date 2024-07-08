@@ -80,6 +80,10 @@ button {
   &.back {
     @apply text-blue-700;
   }
+
+  &.disabled {
+    @apply text-slate-300 !important;
+  }
 }
 
 @keyframes slideFromLeft {

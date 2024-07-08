@@ -96,7 +96,10 @@
       <Deck count={game.table.deck.count}/>
 
       <!-- show trump card below deck -->
-      <Card addClass="trump-card" card={game.trump_card} interactive={false}/>
+      {#if game.table.deck.count > 0}
+        <Card addClass="trump-card" card={game.trump_card} interactive={false}/>
+      {/if}
+
       <!-- player decks -->
       <Players players={players} current={currentPlayer} />
     </section>
