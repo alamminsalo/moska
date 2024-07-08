@@ -1,7 +1,7 @@
 <script lang="ts">
   export let count = 0;
 
-  let maxCardsShown = 8;
+  let maxCardsShown = 6;
   count = Math.min(count, maxCardsShown)
 
   let cardTransforms: any[] = []

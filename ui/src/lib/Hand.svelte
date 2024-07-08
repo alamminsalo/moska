@@ -2,7 +2,7 @@
   export let count = 0;
   export let open = false;
 
-  let maxCardsShown = 7;
+  let maxCardsShown = 6;
   count = Math.min(count, maxCardsShown)
 
   let cardTransforms: any[] = []
