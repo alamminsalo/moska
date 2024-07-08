@@ -7,7 +7,7 @@
 <span class="deck text-center px-4" class:active={active} class:empty={count < 1}>
   <!-- card backface, deck/player name -->
   <div class="name mb-1">{name}</div>
-  <div class="card text-blue-700">🂠</div>
+  <div class="card back">🂠</div>
   <!-- deck count -->
   <div class="count">x{count}</div>
 </span>

@@ -72,4 +72,8 @@ button {
   text-indent: -0.6rem;
   letter-spacing: -0.6rem;
   overflow: hidden;
+
+  &.back {
+    @apply text-blue-700;
+  }
 }

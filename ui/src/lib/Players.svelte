@@ -1,15 +1,25 @@
 <script lang="ts">
-  import Deck from './Deck.svelte';
+  import Hand from './Hand.svelte';
   import {Player} from './moska/moska';
 
-  export let players: Player[] = [];
-  export let current = 0;
+  export let players: Player[];
+  export let current: Player;
 </script>
 
 <!-- player decks -->
 <div class="flex grow justify-end gap-4">
-  {#each players as player, index}
-    <Deck name={"Player " + (index+1)} count={player.cards.length} active={index === current}/>
+  {#each players as player}
+    <div class="text-center">
+      <div class:active={current.id == player.id}>{"Player " + (player.id+1)}</div>
+      <Hand count={player.cards.length}/>
+      <div class:active={current.id == player.id}>x{player.cards.length}</div>
+    </div>
   {/each}
 </div>
+
+<style lang="scss">
+  .active {
+    @apply font-bold;
+  }
+</style>
 

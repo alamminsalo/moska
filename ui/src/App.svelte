@@ -13,6 +13,7 @@
   let statusText = ""
 
   // player pointers
+  let players: Player[] = []
   let humanPlayer: Player | null = null;
   let currentPlayer: Player | null = null;
 
@@ -64,6 +65,7 @@
   // update state on game object changes
   $: game, (() => {
     if (game) {
+      players = game.table.players;
       currentPlayer = game.table.players[game.table.player_index];
       statusText = getStatusText();
 
@@ -94,7 +96,7 @@
       <Card card={game.trump_card} interactive={false} style="transform: rotate(90deg); z-index: -1; left: -6rem; top: -0.6rem;"/>
 
       <!-- player decks -->
-      <Players players={game.table.players} current={game.table.player_index} />
+      <Players players={players} current={currentPlayer} />
     </section>
 
     <!-- table cards -->
