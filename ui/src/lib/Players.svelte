@@ -11,7 +11,7 @@
   {#each players as player}
     <div class="text-center">
       <div class:active={current.id == player.id}>{"Player " + (player.id+1)}</div>
-      <Hand count={player.cards.length}/>
+      <Hand count={player.cards.length} open={current.id == player.id}/>
       <div class:active={current.id == player.id}>x{player.cards.length}</div>
     </div>
   {/each}

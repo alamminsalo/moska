@@ -30,14 +30,18 @@ a {
 
 button {
   @apply relative font-bold rounded p-2
-  text-black bg-slate-300
+  text-black bg-slate-300 text-lg
   border border-black border-2
   uppercase
   px-4;
 
   box-shadow: 0rem 0.2rem 0.2rem #3333;
 
-  &:hover {
+  &:disabled {
+    @apply cursor-not-allowed;
+  }
+
+  &:hover:not([disabled]) {
     @apply text-slate-100 bg-black;
 
     &:active {
@@ -50,7 +54,7 @@ button {
   &.success {
     @apply text-green-500 border-green-500;
 
-    &:hover {
+    &:hover:not([disabled]) {
       @apply text-slate-100 bg-green-500;
     }
   }
@@ -58,7 +62,7 @@ button {
   &.danger {
     @apply text-red-500 border-red-500;
 
-    &:hover {
+    &:hover:not([disabled]) {
       @apply text-slate-100 bg-red-500;
     }
   }

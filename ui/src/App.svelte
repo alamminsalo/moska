@@ -80,20 +80,19 @@
   <!-- top menu -->
   <Menu>
     <b>Moska</b>
-    <a on:click={newGame}>New Game</a>
-    <!-- game status indicator -->
+    <a class="dice text-2xl" title="New Game" on:click={newGame}><i class="ph-bold ph-dice-five"/></a>
     <b class="grow text-end"><i>{statusText}</i></b>
   </Menu>
 
-  <div class="h-full w-full flex flex-col lg:w-5/6 divide-y divide-dotted py-6">
+  <div class="h-full w-full flex flex-col lg:w-5/6 divide-y divide-dotted py-2">
 
     <!-- deck and players -->
     <section class="flex justify-center items-center border-black pb-2 gap-6">
       <!-- drawing deck -->
       <Deck count={game.table.deck.count}/>
 
-      <!-- trump card -->
-      <Card card={game.trump_card} interactive={false} style="transform: rotate(90deg); z-index: -1; left: -6rem; top: -0.6rem;"/>
+      <!-- show trump card below deck -->
+      <Card card={game.trump_card} style="transform: rotate(90deg); z-index: -1; left: -6rem; top: -0.6rem;"/>
 
       <!-- player decks -->
       <Players players={players} current={currentPlayer} />
@@ -103,21 +102,26 @@
     <section class="relative grow flex flex-col border-black">
 
       <!-- ok/take button -->
-      {#if game.valid}
         <div class="absolute h-full w-full flex justify-center items-center">
-          {#if game.state === State.PlayerDefending && game.defender_cards.length === 0}
-            <!-- Take button -->
-            <button class="danger" on:click={() => action(3, 0)} >
-              Take
-            </button>
-          {:else}
-            <!-- Ok button -->
-            <button class="success" on:click={() => action(3, 0)} class:invisible={!game.valid} disabled={!game.valid}>
-              Ok
-            </button>
+          {#if game.valid}
+            {#if game.state === State.PlayerDefending && game.defender_cards.length === 0}
+              <!-- Take button -->
+              <button class="danger" on:click={() => action(3, 0)} title="Withdraw cards">
+                <i class="ph-bold ph-hand"/> 
+              </button>
+              {:else}
+                <!-- Ok button -->
+                <button class="success" on:click={() => action(3, 0)} title="Submit cards">
+                  <i class="ph-bold ph-check"/> 
+                </button>
+              {/if}
+            {:else}
+              <!-- Invalid sign -->
+              <button class="danger" on:click={() => action(3, 0)} disabled title="Invalid cards">
+                <i class="ph-bold ph-prohibit"/> 
+              </button>
           {/if}
         </div>
-      {/if}
 
       <!-- attacker cards -->
       <div class="flex h-1/2 justify-center items-center border-black gap-3">
@@ -150,3 +154,12 @@
   </div>
   {/if}
 </main>
+
+<style lang="scss">
+  .dice {
+    @apply transition-all;
+    &:hover {
+      transform: rotate(30deg);
+    }
+  }
+</style>
