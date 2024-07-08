@@ -52,10 +52,10 @@ button {
   }
 
   &.success {
-    @apply text-green-500 border-green-500;
+    @apply text-green-600 border-green-600;
 
     &:hover:not([disabled]) {
-      @apply text-slate-100 bg-green-500;
+      @apply text-slate-100 bg-green-600;
     }
   }
 
@@ -80,4 +80,20 @@ button {
   &.back {
     @apply text-blue-700;
   }
+}
+
+@keyframes slideFromLeft {
+  0% {
+    transform: translate(-15%, 0%);
+  }
+  100% {
+    transform: translate(-15%, 90%);
+  }
+}
+
+.trump-card {
+  z-index: -1;
+  rotate: 90deg;
+  transform: translate(-15%, 90%);
+  animation: 0.4s slideFromLeft;
 }

@@ -18,12 +18,16 @@
   let currentPlayer: Player | null = null;
 
   function newGame() {
-    game = new Moska(numberOfPlayers);
-    game.new_round();
+    game = null;
 
-    humanPlayer = game.table.players[0];
+    // Triggers animations
+    setTimeout(() => {
+      game = new Moska(numberOfPlayers);
+      game.new_round();
 
-    game = game;
+      humanPlayer = game.table.players[0];
+      game = game;
+    }, 0)
   }
 
   function action(action: number, index: number){
@@ -92,8 +96,7 @@
       <Deck count={game.table.deck.count}/>
 
       <!-- show trump card below deck -->
-      <Card card={game.trump_card} style="transform: rotate(90deg); z-index: -1; left: -6rem; top: -0.6rem;"/>
-
+      <Card addClass="trump-card" card={game.trump_card} interactive={false}/>
       <!-- player decks -->
       <Players players={players} current={currentPlayer} />
     </section>
@@ -117,7 +120,7 @@
               {/if}
             {:else}
               <!-- Invalid sign -->
-              <button class="danger" on:click={() => action(3, 0)} disabled title="Invalid cards">
+              <button class="" on:click={() => action(3, 0)} disabled title="Invalid cards">
                 <i class="ph-bold ph-prohibit"/> 
               </button>
           {/if}
@@ -126,7 +129,7 @@
       <!-- attacker cards -->
       <div class="flex h-1/2 justify-center items-center border-black gap-3">
         {#each game.attacker_cards as card, index}
-          <Card card={card} onclick={() => action(2, index)} />
+          <Card card={card} interactive={game.state == State.PlayerAttacking} onclick={() => action(2, index)} />
         {/each}
       </div>
 
@@ -135,7 +138,7 @@
       <!-- defender cards -->
       <div class="flex h-1/2 justify-center items-center border-black gap-3">
         {#each game.defender_cards as card, index}
-          <Card card={card} onclick={() => action(2, index)} />
+          <Card card={card} interactive={game.state == State.PlayerDefending} onclick={() => action(2, index)} />
         {/each}
       </div>
     </section>
@@ -158,8 +161,10 @@
 <style lang="scss">
   .dice {
     @apply transition-all;
+    transform: rotate(30deg);
+
     &:hover {
-      transform: rotate(30deg);
+      transform: rotate(180deg);
     }
   }
 </style>

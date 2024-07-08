@@ -2,7 +2,7 @@
   export let count = 0;
   export let open = false;
 
-  let maxCardsShown = 8;
+  let maxCardsShown = 7;
   count = Math.min(count, maxCardsShown)
 
   let cardTransforms: any[] = []
@@ -10,11 +10,11 @@
   let handAngle = 0;
   let handOffset = 0;
 
-  function refresh(maxAngle=25, maxOffset=14) {
+  function refresh(maxAngle=40, maxOffset=6) {
     let cards = [...Array(count).keys()]
     
     cardTransforms = cards.map(index => ({
-      angle: open ? maxAngle / count * index : 0,
+      angle: (open ? maxAngle : 6) / count * index,
       offset: maxOffset / count * index,
     }))
 
@@ -26,7 +26,7 @@
 </script>
 
 <span>
-  <span class="hand p-0 m-0" class:open={open} style={`transform: rotate(${handAngle}deg) translate(${handOffset}px);`}>
+  <span class="hand" class:open={open} style={`transform: rotate(${handAngle}deg) translate(${handOffset}px);`}>
     {#each cardTransforms as tr}
       <span class="card back" style={`transform: rotate(${tr.angle}deg) translate(${tr.offset}px);`}>🂠</span>
     {/each}

@@ -3,8 +3,8 @@
   export let card: Card;
   export let interactive: boolean = true;
   export let onclick = () => {};
-
   export let style = "";
+  export let addClass = ""
 
   let red = false;
 
@@ -13,13 +13,18 @@
   })()
 </script>
 
-<span class="card" class:interactive={interactive} style={style} on:click={onclick} class:red={red}>
+<span class={"card " + addClass} class:interactive={interactive} class:red={red} style={style}
+      on:click={() => interactive && onclick()}>
   {card.unicode}
 </span>
 
 <style lang="scss">
   .card {
-    @apply relative cursor-pointer;
+    @apply relative cursor-pointer transition-all;
+
+    &:not(.interactive) {
+      @apply cursor-not-allowed;
+    }
   }
   .interactive {
     &:hover {
