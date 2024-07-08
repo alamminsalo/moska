@@ -6,7 +6,11 @@
 
   export let style = "";
 
-  let red = ["Hearts", "Diamonds"].includes(card.suit);
+  let red = false;
+
+  $: card, (() => {
+    red = ["Hearts", "Diamonds"].includes(card.suit);
+  })()
 </script>
 
 <span class="card" class:interactive={interactive} style={style} on:click={onclick} class:red={red}>
@@ -15,15 +19,14 @@
 
 <style lang="scss">
   .card {
-    @apply relative;
-    cursor: pointer;
-    rotate: inherit;
+    @apply relative cursor-pointer;
   }
   .interactive {
     &:hover {
       top: -1rem;
       transform: rotate(3deg);
       z-index: 999;
+      box-shadow: 0.4rem 0.8rem #3333;
     }
   }
   .red {

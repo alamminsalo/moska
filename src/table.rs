@@ -4,12 +4,13 @@ use wasm_bindgen::prelude::*;
 #[derive(Clone, Default)]
 #[wasm_bindgen(getter_with_clone)]
 pub struct Player {
+    pub id: u8,
     pub cards: Vec<Card>,
 }
 
 impl Player {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn new(id: u8) -> Self {
+        Player { id, cards: vec![] }
     }
 
     pub fn hand(&self) -> Vec<Card> {
@@ -45,7 +46,7 @@ pub struct Table {
 impl Table {
     pub(crate) fn new(players: u8) -> Self {
         Table {
-            players: vec![Player::new(); players as usize],
+            players: (0..players).into_iter().map(Player::new).collect(),
             deck: Deck::new(),
             turn: 0,
             round: 0,
