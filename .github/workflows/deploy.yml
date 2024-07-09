@@ -38,7 +38,6 @@ jobs:
   build-ui:
     needs: build-wasm
     runs-on: ubuntu-latest
-    working-directory: ui
 
     steps:
     - name: Download pkg artifact
@@ -49,12 +48,15 @@ jobs:
 
     - name: Install dependencies
       run: npm install
+      working-directory: ui
 
     - name: Run build
       run: npm run build
+      working-directory: ui
 
     - name: Upload dist directory
       uses: actions/upload-artifact@v2
+      working-directory: ui
       with:
         name: dist
         path: dist/
