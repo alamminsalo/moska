@@ -24,11 +24,6 @@ jobs:
       run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
     - run: wasm-pack build -t web
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '14'  # Specify the Node.js version you need
-
     - name: Upload pkg directory
       uses: actions/upload-artifact@v2
       with:
@@ -46,6 +41,11 @@ jobs:
       with:
         name: pkg
         path: ui/dist/moska
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '22'  # Specify the Node.js version you need
 
     - name: Install dependencies
       run: npm install
