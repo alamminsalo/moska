@@ -29,7 +29,7 @@ pub enum Rank {
     King = 13,
 }
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, PartialEq, Debug)]
 #[wasm_bindgen]
 pub struct Card {
     #[wasm_bindgen(skip)]

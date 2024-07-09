@@ -79,6 +79,24 @@ impl Moska {
         player_index
     }
 
+    // Swaps trump card with the card in current player's hand.
+    // Only allowed if the card in question is trump card with rank 2.
+    pub fn try_swap_trumpcard(&mut self, card_index: usize) -> bool {
+        if let Some(player) = self.table.current_player_mut() {
+            if let Some(card) = player.cards.get_mut(card_index) {
+                if card.rank == Rank::Two && card.suit == self.trump_card.suit {
+                    // Swap cards
+                    let card_copy = *card;
+                    *card = self.trump_card;
+                    self.trump_card = card_copy;
+                    return true;
+                }
+            }
+        }
+
+        false
+    }
+
     pub fn new_round(&mut self) {
         self.table.round += 1;
 
@@ -649,5 +667,36 @@ mod tests {
 
         // player 0 should have lost the game
         assert_eq!(game.state, State::GameOver);
+    }
+
+    #[test]
+    fn test_swap_trumpcard() {
+        let mut game = Moska::new(2);
+        game.new_round();
+
+        game.trump_card = Card::new(Suit::Spades, Rank::Ace);
+
+        game.table.players[0].cards = vec![Card::new(Suit::Spades, Rank::Two)];
+        game.table.players[1].cards = vec![Card::new(Suit::Hearts, Rank::Three)];
+
+        assert_eq!(game.try_swap_trumpcard(0), true);
+        assert_eq!(
+            game.table.players[0].cards[0],
+            Card::new(Suit::Spades, Rank::Ace)
+        );
+
+        let mut game = Moska::new(2);
+        game.new_round();
+
+        game.trump_card = Card::new(Suit::Spades, Rank::Ace);
+
+        game.table.players[0].cards = vec![Card::new(Suit::Hearts, Rank::Two)];
+        game.table.players[1].cards = vec![Card::new(Suit::Hearts, Rank::Three)];
+
+        assert_eq!(game.try_swap_trumpcard(0), false);
+        assert_eq!(
+            game.table.players[0].cards[0],
+            Card::new(Suit::Hearts, Rank::Two)
+        );
     }
 }
