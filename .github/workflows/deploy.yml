@@ -59,7 +59,7 @@ jobs:
     - name: Upload dist directory
       uses: actions/upload-artifact@v2
       with:
-        name: dist
+        name: github-pages
         path: ui/dist/
 
   publish:
@@ -84,4 +84,3 @@ jobs:
         - name: Deploy to GitHub Pages
           id: deployment
           uses: actions/deploy-pages@v4 # or specific "vX.X.X" version tag for this action
-          artifact: pages
