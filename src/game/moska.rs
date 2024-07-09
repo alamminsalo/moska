@@ -16,6 +16,7 @@ enum PlayerAction {
     AddCard = 1,
     TakeCard = 2,
     Submit = 3,
+    SwapTrumpCard = 4,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -80,17 +81,14 @@ impl Moska {
     }
 
     // Swaps trump card with the card in current player's hand.
-    // Only allowed if the card in question is trump card with rank 2.
-    pub fn try_swap_trumpcard(&mut self, card_index: usize) -> bool {
+    pub fn swap_trumpcard(&mut self, card_index: usize) -> bool {
         if let Some(player) = self.table.current_player_mut() {
             if let Some(card) = player.cards.get_mut(card_index) {
-                if card.rank == Rank::Two && card.suit == self.trump_card.suit {
-                    // Swap cards
-                    let card_copy = *card;
-                    *card = self.trump_card;
-                    self.trump_card = card_copy;
-                    return true;
-                }
+                // Swap cards
+                let card_copy = *card;
+                *card = self.trump_card;
+                self.trump_card = card_copy;
+                return true;
             }
         }
 
@@ -225,7 +223,21 @@ impl Moska {
             }
         }
 
-        true
+        // Attempts to swap the trump card
+        if action == PlayerAction::SwapTrumpCard as usize {
+            // Try to find the index of card with rank 2 and same suit as trump card
+            if let Some(player) = self.table.current_player() {
+                if let Some(card_index) = player
+                    .cards
+                    .iter()
+                    .position(|card| card.suit == self.trump_card.suit && card.rank == Rank::Two)
+                {
+                    return self.swap_trumpcard(card_index);
+                }
+            }
+        }
+
+        false
     }
 
     // Returns copy of player cards
@@ -346,10 +358,9 @@ impl Moska {
                     return true;
                 }
             }
-
             // If suits are not equal,
             // check if B is a trump card.
-            if b.suit == self.trump_card.suit {
+            else if b.suit == self.trump_card.suit {
                 return true;
             }
 
@@ -548,6 +559,15 @@ mod tests {
         game.player_action(PlayerAction::Submit as usize, 0);
         assert_eq!(game.attacker_cards.len(), 0);
         assert_eq!(game.defender_cards.len(), 0);
+
+        game.attacker_cards.push(Card::new(Suit::Clubs, Rank::Jack));
+        game.attacker_cards
+            .push(Card::new(Suit::Spades, Rank::Queen));
+        game.defender_cards
+            .push(Card::new(Suit::Clubs, Rank::Queen));
+        game.defender_cards
+            .push(Card::new(Suit::Spades, Rank::Jack));
+        assert_eq!(game.eval_defense(), false);
     }
 
     #[test]
@@ -679,7 +699,7 @@ mod tests {
         game.table.players[0].cards = vec![Card::new(Suit::Spades, Rank::Two)];
         game.table.players[1].cards = vec![Card::new(Suit::Hearts, Rank::Three)];
 
-        assert_eq!(game.try_swap_trumpcard(0), true);
+        assert_eq!(game.player_action(4, 0), true);
         assert_eq!(
             game.table.players[0].cards[0],
             Card::new(Suit::Spades, Rank::Ace)
@@ -693,7 +713,7 @@ mod tests {
         game.table.players[0].cards = vec![Card::new(Suit::Hearts, Rank::Two)];
         game.table.players[1].cards = vec![Card::new(Suit::Hearts, Rank::Three)];
 
-        assert_eq!(game.try_swap_trumpcard(0), false);
+        assert_eq!(game.player_action(4, 0), false);
         assert_eq!(
             game.table.players[0].cards[0],
             Card::new(Suit::Hearts, Rank::Two)

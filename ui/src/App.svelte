@@ -42,14 +42,6 @@
     }
   }
 
-  function reset() {
-    if (game) {
-      currentPlayer = null;
-      game.new_round();
-      game = game;
-    }
-  }
-
   function getStatusText() {
     if (game?.state == State.GameOver) {
       return "Game over";
@@ -97,13 +89,13 @@
   <div class="h-full w-full flex flex-col divide-y py-2">
 
     <!-- deck and players -->
-    <section class="w-full flex justify-center items-center pb-2">
+    <section class="w-full flex justify-center items-center pb-2 z-10">
         <!-- drawing deck -->
         <Deck count={game.table.deck.count}/>
 
         <!-- show trump card below deck -->
         {#if game.table.deck.count > 0}
-          <Card addClass="trump-card" card={game.trump_card} interactive={false}/>
+          <Card addClass="trump-card" card={game.trump_card} onclick={() => action(4, 0)}/>
         {/if}
 
         <!-- player decks -->

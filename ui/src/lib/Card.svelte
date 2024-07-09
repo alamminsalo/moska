@@ -26,14 +26,20 @@
       @apply cursor-not-allowed;
     }
   }
-  .interactive {
+
+  .interactive:not(.trump-card) {
     &:hover {
-      top: -1rem;
-      transform: rotate(3deg);
-      z-index: 999;
+      transform: rotate(3deg) translate(0, -1rem);
       box-shadow: 0.4rem 0.8rem #3333;
     }
   }
+
+  .interactive.trump-card {
+    &:hover {
+      transform: translate(-15%, 60%);
+    }
+  }
+
   .red {
     @apply text-red-700;
   }
