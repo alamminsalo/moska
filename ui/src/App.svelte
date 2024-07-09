@@ -15,6 +15,7 @@
   let players: Player[] = []
   let humanPlayer: Player | null = null;
   let currentPlayer: Player | null = null;
+  let statusText = getStatusText()
 
   function newGame() {
     if (game) {
@@ -73,6 +74,7 @@
     if (game) {
       players = game.table.players;
       currentPlayer = game.table.players[game.table.player_index];
+      statusText = getStatusText()
 
       console.log('Game updated:', game)
       console.log('Current player:', currentPlayer)
@@ -87,7 +89,7 @@
     <b>Moska</b>
     <a class="dice text-2xl" title="New Game" on:click={newGame}><i class="ph-bold ph-dice-five"/></a>
     <span class="grow text-end font-bold italic">
-      {getStatusText()}
+      {statusText}
       <a class="text-xl"><i class="ph-bold ph-question"/></a>
     </span>
   </Menu>

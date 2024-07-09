@@ -329,10 +329,7 @@ impl Moska {
             false
         };
 
-        // Card order matters:
-        // the attacking and defending cards must be lined up.
-        //
-        // TODO: automatic resolving without strict ordering?
+        // Try to find a permutation that has all pairs resolved.
         self.defender_cards
             .iter()
             .permutations(self.defender_cards.len())
@@ -499,9 +496,14 @@ mod tests {
         // add a second pair
         game.attacker_cards.push(Card::new(Suit::Spades, Rank::Ten));
         game.attacker_cards.push(Card::new(Suit::Clubs, Rank::Ten));
+
         game.defender_cards
             .push(Card::new(Suit::Spades, Rank::Jack));
         game.defender_cards.push(Card::new(Suit::Clubs, Rank::Jack));
+        assert_eq!(game.eval_defense(), true);
+
+        // should be ok in reverse order
+        game.defender_cards.reverse();
         assert_eq!(game.eval_defense(), true);
 
         // pop last card and try with lesser rank
