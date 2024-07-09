@@ -10,7 +10,6 @@
 
   let game: Moska | null = null;
   let numberOfPlayers = 2;
-  let statusText = ""
 
   // player pointers
   let players: Player[] = []
@@ -74,7 +73,6 @@
     if (game) {
       players = game.table.players;
       currentPlayer = game.table.players[game.table.player_index];
-      statusText = getStatusText();
 
       console.log('Game updated:', game)
       console.log('Current player:', currentPlayer)
@@ -88,7 +86,10 @@
   <Menu>
     <b>Moska</b>
     <a class="dice text-2xl" title="New Game" on:click={newGame}><i class="ph-bold ph-dice-five"/></a>
-    <b class="grow text-end"><i>{statusText}</i></b>
+    <span class="grow text-end font-bold italic">
+      {getStatusText()}
+      <a class="text-xl"><i class="ph-bold ph-question"/></a>
+    </span>
   </Menu>
 
   <div class="h-full w-full flex flex-col divide-y py-2">
@@ -172,6 +173,10 @@
     &:hover {
       transform: rotate(360deg);
     }
+  }
+  
+  .player-hand {
+    animation: 0.4s playerHandSlide;
   }
 
   section {
