@@ -56,10 +56,9 @@ jobs:
 
     - name: Upload dist directory
       uses: actions/upload-artifact@v2
-      working-directory: ui
       with:
         name: dist
-        path: dist/
+        path: ui/dist/
 
   publish:
     needs: build-ui
