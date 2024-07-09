@@ -43,7 +43,7 @@ jobs:
     - name: Download pkg artifact
       uses: actions/download-artifact@v2
       with:
-        name: pgk
+        name: pkg
         path: ui/dist/moska
 
     - name: Install dependencies
