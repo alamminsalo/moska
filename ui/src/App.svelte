@@ -122,7 +122,7 @@
       </div>
 
       <!-- ok/take button -->
-      <div class="absolute h-full w-full flex justify-center items-center">
+      <div class="absolute h-full w-full flex justify-center items-center pointer-events-none">
         {#if game.valid}
           {#if game.state === State.PlayerDefending && game.defender_cards.length === 0}
             <!-- Take button -->
