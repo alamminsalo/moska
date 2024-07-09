@@ -2,6 +2,7 @@
  * Game logic for Finnish Moska
  */
 
+use itertools::Itertools;
 use std::collections::HashMap;
 use wasm_bindgen::prelude::*;
 
@@ -332,10 +333,16 @@ impl Moska {
         // the attacking and defending cards must be lined up.
         //
         // TODO: automatic resolving without strict ordering?
-        self.attacker_cards
+        self.defender_cards
             .iter()
-            .zip(self.defender_cards.iter())
-            .all(|(a, b)| resolve_pair(a, b))
+            .permutations(self.defender_cards.len())
+            .into_iter()
+            .any(|chunk| {
+                chunk
+                    .iter()
+                    .zip(&self.attacker_cards)
+                    .all(|(def, atk)| resolve_pair(atk, def))
+            })
     }
 
     // Clears playing table
@@ -483,6 +490,7 @@ mod tests {
         assert_eq!(game.eval_defense(), false);
 
         // replace correct suit for defender
+        println!("foo");
         game.defender_cards.pop();
         game.defender_cards
             .push(Card::new(Suit::Diamonds, Rank::Three));
