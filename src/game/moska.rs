@@ -263,10 +263,19 @@ impl Moska {
     }
 
     // Evaluates attacking validity.
+    //
     // Attacking cards must either contain a single card
     // or must be paired cards.
+    //
+    // Card count cannot exceed number of cards in hand of next player.
     fn eval_attack(&self) -> bool {
         if self.attacker_cards.is_empty() {
+            return false;
+        }
+
+        // Check that card count does not exceed the count
+        // of cards in next player's hand
+        if self.attacker_cards.len() > self.table.players[self.next_player()].cards.len() {
             return false;
         }
 
