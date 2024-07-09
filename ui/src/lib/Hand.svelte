@@ -25,22 +25,20 @@
   $: count, open, refresh()
 </script>
 
-<span>
-  <span class="hand" class:open={open} style={`transform: rotate(${handAngle}deg) translate(${handOffset}px);`}>
-    {#each cardTransforms as tr}
-      <span class="card back" style={`transform: rotate(${tr.angle}deg) translate(${tr.offset}px);`}>🂠</span>
-    {/each}
-  </span>
+<span class="hand" class:open={open} style={`transform: rotate(${handAngle}deg) translate(${handOffset}px);`}>
+  {#each cardTransforms as tr}
+    <span class="card back" style={`transform: rotate(${tr.angle}deg) translate(${tr.offset}px);`}>🂠</span>
+  {/each}
 </span>
 
 <style lang="scss">
     .hand{
-      @apply relative flex items-center justify-center transition-all;
-      width: 9rem;
-      height: 9rem;
+      @apply flex items-center justify-center transition-all;
+      width: 8rem;
+      height: 8rem;
 
       &.open {
-        width: 10rem;
+        width: 9rem;
       }
 
       .card {

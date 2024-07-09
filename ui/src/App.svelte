@@ -18,7 +18,10 @@
   let currentPlayer: Player | null = null;
 
   function newGame() {
-    game = null;
+    if (game) {
+      game.free();
+      game = null;
+    }
 
     // Triggers animations
     setTimeout(() => {
@@ -88,20 +91,20 @@
     <b class="grow text-end"><i>{statusText}</i></b>
   </Menu>
 
-  <div class="h-full w-full flex flex-col lg:w-5/6 divide-y divide-dotted py-2">
+  <div class="h-full w-full flex flex-col divide-y py-2">
 
     <!-- deck and players -->
-    <section class="flex justify-center items-center border-black pb-2 gap-6">
-      <!-- drawing deck -->
-      <Deck count={game.table.deck.count}/>
+    <section class="w-full flex justify-center items-center pb-2">
+        <!-- drawing deck -->
+        <Deck count={game.table.deck.count}/>
 
-      <!-- show trump card below deck -->
-      {#if game.table.deck.count > 0}
-        <Card addClass="trump-card" card={game.trump_card} interactive={false}/>
-      {/if}
+        <!-- show trump card below deck -->
+        {#if game.table.deck.count > 0}
+          <Card addClass="trump-card" card={game.trump_card} interactive={false}/>
+        {/if}
 
-      <!-- player decks -->
-      <Players players={players} current={currentPlayer} />
+        <!-- player decks -->
+        <Players players={players} current={currentPlayer} />
     </section>
 
     <!-- table cards -->
@@ -130,7 +133,7 @@
         </div>
 
       <!-- attacker cards -->
-      <div class="flex h-1/2 justify-center items-center border-black gap-3">
+      <div class="flex h-1/2 justify-center items-center gap-2">
         {#each game.attacker_cards as card, index}
           <Card card={card} interactive={game.state == State.PlayerAttacking} onclick={() => action(2, index)} />
         {/each}
@@ -139,17 +142,17 @@
       <Divider/>
 
       <!-- defender cards -->
-      <div class="flex h-1/2 justify-center items-center border-black gap-3">
+      <div class="flex h-1/2 justify-center items-center gap-2">
         {#each game.defender_cards as card, index}
           <Card card={card} interactive={game.state == State.PlayerDefending} onclick={() => action(2, index)} />
         {/each}
       </div>
     </section>
 
-    <section class="border-black pt-6 flex flex-col">
+    <section class="pt-6 flex flex-col">
       {#if currentPlayer}
         <!-- player cards -->
-        <div class="grow flex flex-wrap justify-center items-center border-black gap-3">
+        <div class="player-hand grow flex justify-center items-center border-black gap-2">
           {#each currentPlayer.cards as card, index}
             <Card card={card} onclick={() => action(1, index)}/>
           {/each}
@@ -167,7 +170,11 @@
     transform: rotate(30deg);
 
     &:hover {
-      transform: rotate(180deg);
+      transform: rotate(360deg);
     }
+  }
+
+  section {
+    @apply border-slate-400;
   }
 </style>
