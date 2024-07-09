@@ -89,7 +89,7 @@
   <div class="h-full w-full flex flex-col divide-y py-2">
 
     <!-- deck and players -->
-    <section class="w-full flex justify-center items-center pb-2 z-10">
+    <section class="w-full flex justify-center items-center pb-2">
         <!-- drawing deck -->
         <Deck count={game.table.deck.count}/>
 
@@ -104,28 +104,6 @@
 
     <!-- table cards -->
     <section class="relative grow flex flex-col border-black">
-
-      <!-- ok/take button -->
-        <div class="absolute h-full w-full flex justify-center items-center">
-          {#if game.valid}
-            {#if game.state === State.PlayerDefending && game.defender_cards.length === 0}
-              <!-- Take button -->
-              <button class="danger" on:click={() => action(3, 0)} title="Withdraw cards">
-                <i class="ph-bold ph-hand"/> 
-              </button>
-              {:else}
-                <!-- Ok button -->
-                <button class="success" on:click={() => action(3, 0)} title="Submit cards">
-                  <i class="ph-bold ph-check"/> 
-                </button>
-              {/if}
-            {:else}
-              <!-- Invalid sign -->
-              <button class="" on:click={() => action(3, 0)} disabled title="Invalid cards">
-                <i class="ph-bold ph-prohibit"/> 
-              </button>
-          {/if}
-        </div>
 
       <!-- attacker cards -->
       <div class="flex h-1/2 justify-center items-center gap-2">
@@ -142,6 +120,29 @@
           <Card card={card} interactive={game.state == State.PlayerDefending} onclick={() => action(2, index)} />
         {/each}
       </div>
+
+      <!-- ok/take button -->
+      <div class="absolute h-full w-full flex justify-center items-center">
+        {#if game.valid}
+          {#if game.state === State.PlayerDefending && game.defender_cards.length === 0}
+            <!-- Take button -->
+            <button class="danger" on:click={() => action(3, 0)} title="Withdraw cards">
+              <i class="ph-bold ph-hand"/> 
+            </button>
+            {:else}
+              <!-- Ok button -->
+              <button class="success" on:click={() => action(3, 0)} title="Submit cards">
+                <i class="ph-bold ph-check"/> 
+              </button>
+            {/if}
+          {:else}
+            <!-- Invalid sign -->
+            <button class="" on:click={() => action(3, 0)} disabled title="Invalid cards">
+              <i class="ph-bold ph-prohibit"/> 
+            </button>
+        {/if}
+      </div>
+
     </section>
 
     <section class="pt-6 flex flex-col">

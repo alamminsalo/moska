@@ -19,8 +19,8 @@
   $: count, refresh()
 </script>
 
-<span class="text-centern z-10" class:pointer-events-none={!onclick}>
-  <span class="deck text-center px-4" style={`transform: translate(${deckOffset}px);`}>
+<span class="text-center z-10" class:pointer-events-none={!onclick}>
+  <span class="deck text-center" style={`transform: translate(${deckOffset}px);`}>
     {#each cardTransforms as tr, index}
       <span class="card back" style={`transform: translate(${tr.offset}px); z-index: ${10 + index};`}>🂠</span>
     {/each}

@@ -34,12 +34,8 @@
 <style lang="scss">
     .hand{
       @apply flex items-center justify-center transition-all;
-      width: 8rem;
-      height: 8rem;
-
-      &.open {
-        width: 9rem;
-      }
+      width: 7rem;
+      height: 7rem;
 
       .card {
         @apply absolute transition-all;
