@@ -61,8 +61,21 @@ impl Moska {
         self.state = State::Initial;
     }
 
-    pub fn current_player(&self) -> usize {
-        self.table.player_index()
+    // Finds next player with cards left
+    pub fn next_player(&self) -> usize {
+        let num_players = self.table.players.len();
+        let mut player_index = (self.table.player_index + 1) % num_players;
+
+        while self.table.players[player_index].cards.len() == 0 {
+            // check looped all players
+            if player_index == self.table.player_index {
+                break;
+            }
+
+            player_index = (player_index + 1) % num_players;
+        }
+
+        player_index
     }
 
     pub fn new_round(&mut self) {
@@ -98,7 +111,8 @@ impl Moska {
             self.state = State::PlayerDefending;
         }
 
-        self.table.turn += 1;
+        // Proceed to next turn
+        self.table.next_turn(self.next_player());
 
         true
     }
@@ -226,7 +240,7 @@ impl Moska {
 
     // Draws enough cards for player until deck is empty
     fn draw_cards(&mut self) {
-        let player_index = self.table.player_index();
+        let player_index = self.table.player_index;
         if let Some(_) = self.table.current_player() {
             let player = self.table.players.get_mut(player_index).unwrap();
             while player.cards.len() < 6 && self.table.deck.peek().is_some() {
@@ -366,7 +380,7 @@ mod tests {
         assert_eq!(game.table.players[1].cards.len(), 6);
 
         // player 0 turn
-        assert_eq!(game.table.player_index(), 0);
+        assert_eq!(game.table.player_index, 0);
         assert_eq!(game.state, State::PlayerAttacking);
 
         // play first card from hand
@@ -379,7 +393,7 @@ mod tests {
         assert_eq!(game.table.players[0].cards.len(), 6);
 
         // player 1 turn
-        assert_eq!(game.table.player_index(), 1);
+        assert_eq!(game.table.player_index, 1);
         assert_eq!(game.state, State::PlayerDefending);
 
         // play first card from hand
@@ -398,7 +412,7 @@ mod tests {
         assert_eq!(game.attacker_cards.len(), 0);
 
         // player 0 turn
-        assert_eq!(game.table.player_index(), 0);
+        assert_eq!(game.table.player_index, 0);
         assert_eq!(game.state, State::PlayerAttacking);
     }
 
@@ -508,12 +522,12 @@ mod tests {
         // test initial state
         assert_eq!(game.state, State::PlayerAttacking);
         assert_eq!(game.table.turn, 0);
-        assert_eq!(game.table.player_index(), 0);
+        assert_eq!(game.table.player_index, 0);
 
         // attempt to submit without cards on the table
         game.player_action(PlayerAction::Submit as usize, 0);
         assert_eq!(game.state, State::PlayerAttacking);
-        assert_eq!(game.table.player_index(), 0);
+        assert_eq!(game.table.player_index, 0);
 
         // add attacking card and end turn
         game.attacker_cards
@@ -521,13 +535,13 @@ mod tests {
         game.player_action(PlayerAction::Submit as usize, 0);
         assert_eq!(game.state, State::PlayerDefending);
         assert_eq!(game.table.turn, 1);
-        assert_eq!(game.table.player_index(), 1);
+        assert_eq!(game.table.player_index, 1);
 
         // add defending card and submit
         game.defender_cards.push(Card::new(Suit::Hearts, Rank::Ace));
         game.player_action(PlayerAction::Submit as usize, 0);
         assert_eq!(game.state, State::PlayerAttacking);
-        assert_eq!(game.table.player_index(), 1);
+        assert_eq!(game.table.player_index, 1);
 
         // table should be clear
         assert!(game.attacker_cards.is_empty());
@@ -541,14 +555,14 @@ mod tests {
         game.player_action(PlayerAction::Submit as usize, 0);
         assert_eq!(game.state, State::PlayerDefending);
         assert_eq!(game.table.turn, 2);
-        assert_eq!(game.table.player_index(), 2);
+        assert_eq!(game.table.player_index, 2);
 
         // submit without defending cards, taking the attacking cards
         game.player_action(PlayerAction::Submit as usize, 0);
         assert_eq!(game.table.players[2].cards.len(), 8);
         assert_eq!(game.state, State::PlayerAttacking);
         assert_eq!(game.table.turn, 3);
-        assert_eq!(game.table.player_index(), 0);
+        assert_eq!(game.table.player_index, 0);
     }
 
     #[test]

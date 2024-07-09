@@ -35,6 +35,9 @@ pub struct Table {
     // Players in table
     pub players: Vec<Player>,
 
+    // Current player
+    pub player_index: usize,
+
     // Turns played
     pub turn: usize,
 
@@ -48,6 +51,7 @@ impl Table {
         Table {
             players: (0..players).into_iter().map(Player::new).collect(),
             deck: Deck::new(),
+            player_index: 0,
             turn: 0,
             round: 0,
         }
@@ -61,17 +65,16 @@ impl Table {
         }
     }
 
-    #[wasm_bindgen(getter)]
-    pub fn player_index(&self) -> usize {
-        self.turn % self.players.len()
-    }
-
     pub(crate) fn current_player(&mut self) -> Option<&Player> {
-        self.players.get(self.player_index())
+        self.players.get(self.player_index)
     }
 
     pub(crate) fn current_player_mut(&mut self) -> Option<&mut Player> {
-        let player_index = self.player_index();
-        self.players.get_mut(player_index)
+        self.players.get_mut(self.player_index)
+    }
+
+    pub(crate) fn next_turn(&mut self, next_player_index: usize) {
+        self.player_index = next_player_index;
+        self.turn += 1;
     }
 }
