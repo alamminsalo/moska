@@ -18,6 +18,10 @@
   let currentPlayer: Player | null = null;
   let statusText = getStatusText()
 
+  function timeout(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
   function newGame() {
     if (game) {
       game.free();
@@ -60,6 +64,7 @@
 
   function botAct() {
     if (game && currentPlayer) {
+      console.log('botAct()')
       let currentBot = bots[currentPlayer.id]
       let actions = currentBot.get_actions(game);
 
@@ -70,9 +75,6 @@
         console.log('Bot action', action, card_index)
         game.player_action(action, card_index);
       }
-
-      // submit action
-      game.player_action(3, 0);
 
       game = game;
     }
@@ -94,8 +96,25 @@
     return "";
   }
 
+  async function onTurnChanged() {
+    // run bot on cpu players
+    if (game && currentPlayer?.id !== humanPlayer?.id && game?.state !== State.GameOver) {
+      await timeout(1000)
+      botAct();
+
+      //await some more if cards have been set
+      if (game.attacker_cards.length > 0 && game.defender_cards.length > 0) {
+        await timeout(1000)
+      }
+
+      action(3, 0);
+    }
+  }
+
   // WASM initialize
   init().then(newGame);
+
+  let turn = -1;
 
   // update state on game object changes
   $: game, (() => {
@@ -103,6 +122,11 @@
       players = game.table.players;
       currentPlayer = game.table.players[game.table.player_index];
       statusText = getStatusText()
+
+      if (turn < game.table.turn) {
+        turn = game.table.turn;
+        onTurnChanged();
+      }
 
       console.log('Game updated:', game)
       console.log('Current player:', currentPlayer)
@@ -195,7 +219,7 @@
         <div class="player-hand grow flex justify-center items-center border-black gap-2">
           {#each currentPlayer.cards as card, index}
             <Card card={card} 
-          visible={true || currentPlayer?.id == humanPlayer?.id} onclick={() => action(1, index)}/>
+          visible={currentPlayer?.id == humanPlayer?.id} onclick={() => action(1, index)}/>
           {/each}
         </div>
       {/if}
