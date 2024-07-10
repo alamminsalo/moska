@@ -288,6 +288,7 @@ impl Moska {
         match self.state {
             PlayerAttacking => self.eval_attack(),
             PlayerDefending => self.eval_defense(),
+            GameOver => true,
             _ => false,
         }
     }
