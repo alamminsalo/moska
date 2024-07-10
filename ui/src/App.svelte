@@ -96,7 +96,7 @@
     return "";
   }
 
-  async function onTurnChanged() {
+  async function onStateChanged() {
     // run bot on cpu players
     if (game && currentPlayer?.id !== humanPlayer?.id && game?.state !== State.GameOver) {
       await timeout(1000)
@@ -114,7 +114,7 @@
   // WASM initialize
   init().then(newGame);
 
-  let turn = -1;
+  let state = 0;
 
   // update state on game object changes
   $: game, (() => {
@@ -123,9 +123,9 @@
       currentPlayer = game.table.players[game.table.player_index];
       statusText = getStatusText()
 
-      if (turn < game.table.turn) {
-        turn = game.table.turn;
-        onTurnChanged();
+      if (state !== game.state) {
+        state = game.state;
+        onStateChanged();
       }
 
       console.log('Game updated:', game)
