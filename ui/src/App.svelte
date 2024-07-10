@@ -70,6 +70,10 @@
         console.log('Bot action', action, card_index)
         game.player_action(action, card_index);
       }
+
+      // submit action
+      game.player_action(3, 0);
+
       game = game;
     }
   }
@@ -172,16 +176,15 @@
                 <i class="ph-bold ph-check"/> 
               </button>
             {/if}
-          {:else if game.state === State.PlayerAttacking && game.attacker_cards.length === 0}
-            <!-- auto button -->
-            <button class="info" on:click={botAct}><i class="ph-bold ph-robot"/></button>
           {:else}
             <!-- Invalid sign -->
             <button class="" on:click={() => action(3, 0)} disabled title="Invalid cards">
               <i class="ph-bold ph-prohibit"/> 
             </button>
         {/if}
-        <button class="info" on:click={botAct}><i class="ph-bold ph-robot"/></button>
+        {#if game.state !== State.GameOver}
+          <button class="info" on:click={botAct}><i class="ph-bold ph-robot"/></button>
+        {/if}
       </span>
 
     </section>
