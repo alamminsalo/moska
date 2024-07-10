@@ -33,6 +33,18 @@
     }, 0)
   }
 
+  function newRound() {
+    if (game) {
+      game?.new_round();
+      let _game = game;
+      game = null;
+
+      setTimeout(() => {
+        game = _game;
+      }, 0)
+    }
+  }
+
   function action(action: number, index: number){
     if (game) {
       game.player_action(action, index);
@@ -124,11 +136,16 @@
       <!-- ok/take button -->
       <span class="absolute self-center top-1/2 -translate-y-1/2">
         {#if game.valid}
-          {#if game.state === State.PlayerDefending && game.defender_cards.length === 0}
-            <!-- Take button -->
-            <button class="danger" on:click={() => action(3, 0)} title="Withdraw cards">
-              <i class="ph-bold ph-hand"/> 
-            </button>
+            {#if game.state === State.GameOver}
+              <!-- Next round button -->
+              <button class="success" on:click={newRound} title="New round">
+                <i class="ph-bold ph-arrow-right"/> 
+              </button>
+            {:else if game.state === State.PlayerDefending && game.defender_cards.length === 0}
+              <!-- Take button -->
+              <button class="danger" on:click={() => action(3, 0)} title="Withdraw cards">
+                <i class="ph-bold ph-hand"/> 
+              </button>
             {:else}
               <!-- Ok button -->
               <button class="success" on:click={() => action(3, 0)} title="Submit cards">
