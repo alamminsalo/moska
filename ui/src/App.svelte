@@ -95,7 +95,7 @@
 
         <!-- show trump card below deck -->
         {#if game.table.deck.count > 0}
-          <Card addClass="trump-card" card={game.trump_card} onclick={() => action(4, 0)}/>
+          <Card addClass="trump-card absolute" card={game.trump_card} onclick={() => action(4, 0)}/>
         {/if}
 
         <!-- player decks -->

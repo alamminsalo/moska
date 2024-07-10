@@ -7,7 +7,7 @@
 </script>
 
 <!-- player hands -->
-<div class="flex grow justify-end">
+<div class="flex grow justify-end gap-2">
   {#each players as player}
     <div class="text-center">
       <div class:active={current?.id == player.id}>{"Player " + (player.id+1)}</div>
