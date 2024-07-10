@@ -59,6 +59,14 @@ button {
     }
   }
 
+  &.info {
+    @apply text-blue-600 border-blue-600;
+
+    &:hover:not([disabled]) {
+      @apply text-slate-100 bg-blue-600;
+    }
+  }
+
   &.danger {
     @apply text-red-500 border-red-500;
 
@@ -77,6 +85,10 @@ button {
   text-indent: -0.55rem;
   letter-spacing: -0.5rem;
   overflow: hidden;
+
+  &.red:not(.back) {
+    @apply text-red-700;
+  }
 
   &.back {
     @apply text-blue-700;

@@ -24,6 +24,10 @@ impl Player {
             Some(self.cards.remove(index))
         }
     }
+
+    pub fn card_index(&self, card: &Card) -> Option<usize> {
+        self.cards.iter().position(|self_card| self_card == card)
+    }
 }
 
 #[derive(Clone)]

@@ -4,7 +4,7 @@
   import Divider from './lib/Divider.svelte';
   import Menu from './lib/Menu.svelte';
   import Players from './lib/Players.svelte';
-  import init, {Moska} from "./lib/moska";
+  import init, {Moska, MoskaAI} from "./lib/moska";
   import type {Player} from './lib/moska/moska';
   import {State} from './lib/moska/moska';
 
@@ -14,6 +14,7 @@
   // player pointers
   let players: Player[] = []
   let humanPlayer: Player | null = null;
+  let bots: MoskaAI[] = []
   let currentPlayer: Player | null = null;
   let statusText = getStatusText()
 
@@ -26,6 +27,9 @@
     // Triggers animations
     setTimeout(() => {
       game = new Moska(numberOfPlayers);
+
+      bots = game.table.players.map((_, index) => new MoskaAI(index));
+
       game.new_round();
 
       humanPlayer = game.table.players[0];
@@ -51,6 +55,22 @@
       game = game;
 
       console.log(game)
+    }
+  }
+
+  function botAct() {
+    if (game && currentPlayer) {
+      let currentBot = bots[currentPlayer.id]
+      let actions = currentBot.get_actions(game);
+
+      console.log('cards in hand', currentPlayer.cards);
+      console.log('bot actions',actions);
+
+      for (let {action, card_index} of actions) {
+        console.log('Bot action', action, card_index)
+        game.player_action(action, card_index);
+      }
+      game = game;
     }
   }
 
@@ -152,12 +172,16 @@
                 <i class="ph-bold ph-check"/> 
               </button>
             {/if}
+          {:else if game.state === State.PlayerAttacking && game.attacker_cards.length === 0}
+            <!-- auto button -->
+            <button class="info" on:click={botAct}><i class="ph-bold ph-robot"/></button>
           {:else}
             <!-- Invalid sign -->
             <button class="" on:click={() => action(3, 0)} disabled title="Invalid cards">
               <i class="ph-bold ph-prohibit"/> 
             </button>
         {/if}
+        <button class="info" on:click={botAct}><i class="ph-bold ph-robot"/></button>
       </span>
 
     </section>
@@ -167,12 +191,12 @@
         <!-- player cards -->
         <div class="player-hand grow flex justify-center items-center border-black gap-2">
           {#each currentPlayer.cards as card, index}
-            <Card card={card} onclick={() => action(1, index)}/>
+            <Card card={card} 
+          visible={true || currentPlayer?.id == humanPlayer?.id} onclick={() => action(1, index)}/>
           {/each}
         </div>
       {/if}
     </section>
-
   </div>
   {/if}
 </main>

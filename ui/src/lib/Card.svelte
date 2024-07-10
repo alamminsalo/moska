@@ -5,6 +5,7 @@
   export let onclick = () => {};
   export let style = "";
   export let addClass = ""
+  export let visible = true;
 
   let red = false;
 
@@ -13,9 +14,9 @@
   })()
 </script>
 
-<span class={"card " + addClass} class:interactive={interactive} class:red={red} style={style}
+<span class={"card " + addClass} class:interactive={interactive} class:red={red} style={style} class:back={!visible}
       on:click={() => interactive && onclick()}>
-  {card.unicode}
+  {visible ? card.unicode : "🂠"}
 </span>
 
 <style lang="scss">
@@ -38,10 +39,6 @@
     &:hover {
       transform: translate(-15%, 60%);
     }
-  }
-
-  .red {
-    @apply text-red-700;
   }
 </style>
 

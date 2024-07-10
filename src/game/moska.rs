@@ -1,9 +1,9 @@
-/*
+/*Find smallest card
  * Game logic for Finnish Moska
  */
 
 use itertools::Itertools;
-use std::collections::HashMap;
+use std::{cmp::Ordering, collections::HashMap};
 use wasm_bindgen::prelude::*;
 
 use crate::{
@@ -137,6 +137,7 @@ impl Moska {
     pub fn player_action(&mut self, action: usize, card_index: usize) -> bool {
         // Puts the selected card to the table
         if action == PlayerAction::AddCard as usize {
+            println!("add");
             if let Some(player) = self.table.current_player_mut() {
                 if let Some(card) = player.pop_card(card_index) {
                     match &self.state {
@@ -158,6 +159,7 @@ impl Moska {
         // from attacking or defending cards,
         // depending on the current state.
         if action == PlayerAction::TakeCard as usize {
+            println!("take");
             if let Some(player) = self.table.current_player_mut() {
                 match &self.state {
                     State::PlayerAttacking => {
@@ -188,9 +190,11 @@ impl Moska {
         // Checks attacking cards validity and starts next turn,
         // with next player defending.
         if action == PlayerAction::Submit as usize {
+            println!("submit");
             match self.state {
                 State::PlayerDefending => {
                     if self.defender_cards.is_empty() {
+                        println!("withdraw");
                         // Take all the attacking cards and continue to next turn.
                         self.table
                             .current_player_mut()
@@ -336,6 +340,25 @@ impl Moska {
         true
     }
 
+    // Resolves a pair of attacking and defending card.
+    // Returns true when defending succeeds.
+    pub fn resolve_pair(&self, atk: &Card, def: &Card) -> bool {
+        // If the cards are of same suit,
+        // rank determines the outcome.
+        if atk.suit == def.suit {
+            if card_rank_order(def.rank) > card_rank_order(atk.rank) {
+                return true;
+            }
+        }
+        // If suits are not equal,
+        // check if B is a trump card.
+        else if def.suit == self.trump_card.suit {
+            return true;
+        }
+
+        false
+    }
+
     // Resolves attacking and defending cards.
     // Returns resolve result.
     fn eval_defense(&self) -> bool {
@@ -349,25 +372,6 @@ impl Moska {
             return false;
         }
 
-        // Resolves a pair of attacking and defending card.
-        // Returns true when defending succeeds.
-        let resolve_pair = |a: &Card, b: &Card| -> bool {
-            // If the cards are of same suit,
-            // rank determines the outcome.
-            if a.suit == b.suit {
-                if card_rank_order(b.rank) > card_rank_order(a.rank) {
-                    return true;
-                }
-            }
-            // If suits are not equal,
-            // check if B is a trump card.
-            else if b.suit == self.trump_card.suit {
-                return true;
-            }
-
-            false
-        };
-
         // Try to find a permutation that has all pairs resolved.
         self.defender_cards
             .iter()
@@ -377,7 +381,7 @@ impl Moska {
                 chunk
                     .iter()
                     .zip(&self.attacker_cards)
-                    .all(|(def, atk)| resolve_pair(atk, def))
+                    .all(|(def, atk)| self.resolve_pair(atk, def))
             })
     }
 
@@ -389,7 +393,7 @@ impl Moska {
 }
 
 // Moska card rank ordering
-fn card_rank_order(rank: Rank) -> usize {
+pub fn card_rank_order(rank: Rank) -> usize {
     match rank {
         Rank::Two => 0,
         Rank::Three => 1,
@@ -406,6 +410,38 @@ fn card_rank_order(rank: Rank) -> usize {
         Rank::Ace => 12,
         Rank::Joker => 13,
     }
+}
+
+// Card comparison function with trump suit
+pub fn card_cmp(a: &Card, b: &Card, trump_suit: Suit) -> Ordering {
+    if a.suit == b.suit {
+        if card_rank_order(a.rank) > card_rank_order(b.rank) {
+            Ordering::Greater
+        } else {
+            Ordering::Less
+        }
+    } else if b.suit == trump_suit {
+        Ordering::Greater
+    } else {
+        Ordering::Less
+    }
+}
+
+// Finds all pairs
+pub fn find_pairs<'a>(cards: &[&'a Card]) -> Vec<Vec<&'a Card>> {
+    let mut map: HashMap<u8, Vec<&Card>> = HashMap::new();
+
+    for card in cards {
+        let key = card.rank as u8;
+
+        if !map.contains_key(&key) {
+            map.insert(key, vec![card]);
+        } else {
+            (*map.get_mut(&key).unwrap()).push(card);
+        }
+    }
+
+    map.values().filter(|v| v.len() > 1).cloned().collect_vec()
 }
 
 #[cfg(test)]
