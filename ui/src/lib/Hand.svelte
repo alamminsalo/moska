@@ -10,11 +10,16 @@
   let handAngle = 0;
   let handOffset = 0;
 
-  function refresh(maxAngle=40, maxOffset=6) {
+  function refresh(maxAngle=60, maxOffset=20) {
     let cards = [...Array(count).keys()]
+
+    if (!open) {
+      maxAngle = 0;
+      maxOffset = 10;
+    }
     
     cardTransforms = cards.map(index => ({
-      angle: (open ? maxAngle : 6) / count * index,
+      angle: maxAngle / count * index,
       offset: maxOffset / count * index,
     }))
 
