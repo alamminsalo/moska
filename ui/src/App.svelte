@@ -97,6 +97,8 @@
   }
 
   async function onStateChanged() {
+    interactive = currentPlayer?.id === humanPlayer?.id;
+
     // run bot on cpu players
     if (game && currentPlayer?.id !== humanPlayer?.id && game?.state !== State.GameOver) {
       await timeout(1000)
@@ -115,6 +117,7 @@
   init().then(newGame);
 
   let state = 0;
+  let interactive = false;
 
   // update state on game object changes
   $: game, (() => {
@@ -168,7 +171,7 @@
       <!-- attacker cards -->
       <div class="flex h-1/2 justify-center items-center gap-2">
         {#each game.attacker_cards as card, index}
-          <Card card={card} interactive={game.state == State.PlayerAttacking} onclick={() => action(2, index)} />
+          <Card card={card} interactive={interactive && game.state == State.PlayerAttacking} onclick={() => action(2, index)} />
         {/each}
       </div>
 
@@ -177,13 +180,13 @@
       <!-- defender cards -->
       <div class="flex h-1/2 justify-center items-center gap-2">
         {#each game.defender_cards as card, index}
-          <Card card={card} interactive={game.state == State.PlayerDefending} onclick={() => action(2, index)} />
+          <Card card={card} interactive={interactive && game.state == State.PlayerDefending} onclick={() => action(2, index)} />
         {/each}
       </div>
 
       <!-- ok/take button -->
       <span class="absolute self-center top-1/2 -translate-y-1/2">
-        {#if game.valid}
+        {#if game.valid && interactive}
             {#if game.state === State.GameOver}
               <!-- Next round button -->
               <button class="success" on:click={newRound} title="New round">
@@ -206,7 +209,7 @@
               <i class="ph-bold ph-prohibit"/> 
             </button>
         {/if}
-        {#if game.state !== State.GameOver}
+        {#if game.state !== State.GameOver && interactive}
           <button class="info" on:click={botAct}><i class="ph-bold ph-robot"/></button>
         {/if}
       </span>
@@ -218,8 +221,12 @@
         <!-- player cards -->
         <div class="player-hand grow flex justify-center items-center border-black gap-2">
           {#each currentPlayer.cards as card, index}
-            <Card card={card} 
-          visible={currentPlayer?.id == humanPlayer?.id} onclick={() => action(1, index)}/>
+            <Card
+              card={card} 
+              interactive={interactive}
+              visible={interactive}
+              onclick={() => action(1, index)}
+            />
           {/each}
         </div>
       {/if}
