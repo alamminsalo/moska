@@ -9,7 +9,7 @@
 <!-- player hands -->
 <div class="flex grow justify-end gap-2">
   {#each players as player}
-    <div class="text-center">
+    <div class="text-center pr-4">
       <div class:active={current?.id == player.id}>{"Player " + (player.id+1)}</div>
       <Hand count={player.cards.length} open={current?.id == player.id}/>
       <div>x{player.cards.length}</div>
