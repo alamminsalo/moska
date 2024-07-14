@@ -4,6 +4,7 @@
   import Divider from './lib/Divider.svelte';
   import Menu from './lib/Menu.svelte';
   import Players from './lib/Players.svelte';
+  import Rules from './lib/Rules.svelte';
   import init, {Moska, MoskaAI} from "./lib/moska";
   import type {Player} from './lib/moska/moska';
   import {State} from './lib/moska/moska';
@@ -17,6 +18,7 @@
   let bots: MoskaAI[] = []
   let currentPlayer: Player | null = null;
   let statusText = getStatusText()
+  let showRules = false;
 
   function timeout(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
@@ -145,7 +147,7 @@
     <a class="dice text-2xl" title="New Game" on:click={newGame}><i class="ph-bold ph-dice-five"/></a>
     <span class="grow text-end font-bold italic">
       {statusText}
-      <a class="text-xl"><i class="ph-bold ph-question"/></a>
+      <a class="text-xl" title="Show rules" on:click={() => showRules = true}><i class="ph-bold ph-question"/></a>
     </span>
   </Menu>
 
@@ -233,6 +235,15 @@
     </section>
   </div>
   {/if}
+
+  {#if showRules}
+    <div class="absolute h-full w-full overflow-scroll modal" on:click|self={() => showRules = false}>
+      <Rules>
+        <a class="float-right text-2xl" on:click={() => showRules = false}><i class="ph-bold ph-x"/></a>
+      </Rules>
+    </div>
+  {/if}
+
 </main>
 
 <style lang="scss">

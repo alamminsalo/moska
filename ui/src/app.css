@@ -128,3 +128,7 @@ button {
     transform: translate(0, 0);
   }
 }
+
+.modal {
+  z-index: 999;
+}
